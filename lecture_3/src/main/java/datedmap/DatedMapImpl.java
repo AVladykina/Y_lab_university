@@ -18,8 +18,8 @@ public class DatedMapImpl implements DatedMap {
 
     @Override
     public String get(String key) {
-        DatedValue value = map.get(key);
-        return value == null ? null : value.value;
+        var v = map.get(key);
+        return v == null ? null : v.getValue();
     }
 
     @Override
@@ -39,10 +39,7 @@ public class DatedMapImpl implements DatedMap {
 
     @Override
     public Date getKeyLastInsertionDate(String key) {
-        if (map.containsKey(key)) {
-            return map.get(key).dateAdded;
-        } else {
-            return null;
-        }
+        var v = map.get(key);
+        return v == null ? null: v.getDateAdded();
     }
 }

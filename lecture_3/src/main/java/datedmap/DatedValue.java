@@ -6,9 +6,24 @@ import java.util.Date;
 
 public class DatedValue {
 
-    String value;
-    Date dateAdded;
+    private String value;
+    private Date dateAdded;
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public Date getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(Date dateAdded) {
+        this.dateAdded = dateAdded;
+    }
 
     public DatedValue(String value) {
         this.value = value;
