@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Employee {
+    public Employee(Long id, Long bossId, String name, String position) {
+        this.id = id;
+        this.bossId = bossId;
+        this.name = name;
+        this.position = position;
+    }
+
     private Long id;
     private Long bossId;
     private String name;
@@ -54,4 +61,25 @@ public class Employee {
     public List<Employee> getSubordinate() {
         return subordinate;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ID: ").append(id).append("\n");
+        sb.append("Boss ID: ").append(bossId).append("\n");
+        sb.append("Name: ").append(name).append("\n");
+        sb.append("Position: ").append(position).append("\n");
+        sb.append("Subordinates: ");
+        if (subordinate.isEmpty()) {
+            sb.append("none");
+        } else {
+            sb.append("\n");
+            for (Employee subordinate : subordinate) {
+                sb.append(subordinate.toString().replaceAll("(?m)^", "\t")).append("\n");
+            }
+        }
+        return sb.toString();
+    }
 }
+
+

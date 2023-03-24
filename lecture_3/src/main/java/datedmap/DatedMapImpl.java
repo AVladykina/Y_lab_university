@@ -40,6 +40,6 @@ public class DatedMapImpl implements DatedMap {
     @Override
     public Date getKeyLastInsertionDate(String key) {
         var v = map.get(key);
-        return v == null ? null: v.getDateAdded();
+        return v == null ? null : v.getDateAdded();
     }
 }

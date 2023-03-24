@@ -34,7 +34,7 @@ import java.io.IOException;
 public class OrgStructureTest {
 
     public static void main(String[] args) throws IOException {
-        File csvFile = new File("/Users/anastasia/Desktop/Ylab_java/example.csv");
+        File csvFile = new File("example.csv");
         OrgStructureParserImpl parser = new OrgStructureParserImpl();
         try {
             Employee boss = parser.parseStructure(csvFile);
@@ -53,6 +53,9 @@ public class OrgStructureTest {
                             + "Должность - " + employees.getPosition());
                 }
                 System.out.println();
+
+                System.out.println(boss);
+
             }
         } catch (IOException e) {
             e.printStackTrace();

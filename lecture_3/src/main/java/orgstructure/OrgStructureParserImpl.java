@@ -2,49 +2,56 @@ package orgstructure;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class OrgStructureParserImpl implements OrgStructureParser {
 
+    @Override
     public Employee parseStructure(File csvFile) throws IOException {
-        Scanner scanner = new Scanner(csvFile);
-        String headerLine = scanner.nextLine(); // пропускаем первую строку
-        Employee boss = null;
-        List<Employee> employees = new ArrayList<>();
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            String[] fields = line.split(";");
-            Long id = Long.parseLong(fields[0]);
-            Long bossId = fields[1].isEmpty() ? null : Long.parseLong(fields[1]);
-            String name = fields[2];
-            String position = fields[3];
+        try (Scanner scanner = new Scanner(csvFile)) {
+            var employees = new LinkedHashMap<Long, Employee>();
 
-            Employee employee = new Employee();
-            employee.setId(id);
-            employee.setBossId(bossId);
-            employee.setName(name);
-            employee.setPosition(position);
-            employees.add(employee);
+            // Пропускаем первую строку с названиями полей
+            scanner.nextLine();
 
-            if (bossId == null) {
-                boss = employee;
+            // Читаем данные о сотрудниках
+            while (scanner.hasNextLine()) {
+                var emp = parseEmployee(scanner.nextLine());
+                employees.put(emp.getId(), emp);
             }
+            return buildHierarchy(employees);
         }
-        for (Employee employee : employees) {
+    }
+
+    //Метод создает объект Employee на основе полей из строки и возвращает его.
+    private Employee parseEmployee(String line) {
+        String[] fields = line.split(";");
+        Long id = Long.parseLong(fields[0]);
+        Long bossId = fields[1].isEmpty() ? null : Long.parseLong(fields[1]);
+        String name = fields[2];
+        String position = fields[3];
+        return new Employee(id, bossId, name, position);
+    }
+
+    //Метод строит иерархию сотрудников на основе списка employees.
+    // Для каждого сотрудника находится начальник (по его boss_id) и добавляется в список его подчиненных.
+    private Employee buildHierarchy(Map<Long, Employee> employees) {
+        Employee topBoss = null;
+        for (Employee employee : employees.values()) {
             Long bossId = employee.getBossId();
-            if (bossId != null) {
-                for (Employee e : employees) {
-                    if (e.getId().equals(bossId)) {
-                        employee.setBoss(e);
-                        e.getSubordinate().add(employee);
-                        break;
-                    }
-                }
+            if (bossId == null) {
+                topBoss = employee;
+                continue;
+            }
+            Employee boss = employees.get(bossId);
+            ;
+            if (boss != null) {
+                boss.getSubordinate().add(employee);
+                employee.setBoss(boss);
             }
         }
-        scanner.close();
-        return boss;
+        return topBoss;
     }
 }
